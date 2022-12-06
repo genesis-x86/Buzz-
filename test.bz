@@ -1,0 +1,11 @@
+set SCOPE: 13;
+set A: 0-3;
+set B: 4-8;
+set OUTPUT: 9-13;
+
+def ILV: INV,LOAD,INV;
+def n(split): n(ILV,s(CDEC),INC);
+
+START
+[A](split)
+END
