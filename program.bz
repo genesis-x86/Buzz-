@@ -1,0 +1,10 @@
+set SCOPE: 20;
+set A: 0-5;
+set B: 6-10;
+set OUTPUT: 11-20
+
+START
+INV
+LOAD
+INV
+END
