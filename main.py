@@ -63,19 +63,22 @@ class Lexer():
         self.token_parser()
 
     def token_parser(self):
-        tokens = []
+        self.tokens = []
         for self.line in self.program_lines:
 
             line_str = "".join(self.line)
-            operators = "\s|;|:|,|-"
-            self.line = re.split(r'(\s|;|:|,|-)', line_str)
+            operators = r'(\s|;|:|,|-|[(|)]|\[|\])'
+            self.line = re.split(operators, line_str)
             self.line = [i for i in self.line if i != '']
             self.line = [i for i in self.line if i != ' ']
-            print(self.line)
+            #print(self.line)
             index = 0
             for current_token in self.line:
                 token = self.check_token(current_token, index)
+                self.tokens+=[token.text]
                 index+=1
+            
+        print("Successfully parsed program!")
 
     def check_token(self, token, token_index):
         
@@ -105,6 +108,7 @@ class Lexer():
             token_obj = Token(token, TokenType.START )
         elif token == "END":
             token_obj = Token(token, TokenType.END )
+
         elif token == ";":
             token_obj = Token(token, TokenType.SEMICOLON )
         elif token == ":":
@@ -113,20 +117,29 @@ class Lexer():
             token_obj = Token(token, TokenType.DASH )
         elif token == ",":
             token_obj = Token(token, TokenType.COMMA )
-
-
+        elif token == "(":
+            token_obj = Token(token, TokenType.OPENPARENTHESIS )
+        elif token == ")":
+            token_obj = Token(token, TokenType.CLOSEPARENTHESIS )
+        elif token == "[":
+            token_obj = Token(token, TokenType.OPENBRACKET )
+        elif token == "]":
+            token_obj = Token(token, TokenType.CLOSEBRACKET )
 
 
 
 
         elif token == "def":
             token_obj = Token(token, TokenType.DEF )
-        # Checks for function name
-        elif (isinstance(token, str) == True) and (self.line[token_index - 1] == "def"):
+        # Checks for function definition
+        elif (isinstance(token, str) == True) and (self.line[0] == "def"):
             token_obj = Token(token, TokenType.STRING)
-            print(token)
+
+        elif (isinstance(token, str) == True) and (token in self.tokens):
+            token_obj = Token(token, TokenType.STRING)
+
         else:
-            self.abort(f'{token} is not valid')
+            self.abort(f'Unknown token "{token}" is not valid')
 
         return token_obj
 
@@ -134,7 +147,7 @@ class Lexer():
         print(f'I am Error: {error_code}')
         exit()
 
-file = open(r'./test2.bz', 'r')
+file = open(r'./test.bz', 'r')
 
 test = Lexer(file)
 
