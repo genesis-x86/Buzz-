@@ -1,4 +1,6 @@
 import re
+import argparse
+
 
 class TokenType():
 
@@ -33,16 +35,10 @@ class TokenType():
     OPENPARENTHESIS = 207
     CLOSEPARENTHESIS = 208
 
-    def new_function(self, func_name, args, commands):
-        pass
-        return conversion
-
 class Token:   
     def __init__(self, tokenText, tokenKind):
         self.text = tokenText   # The token's actual text. Used for identifiers, strings, and numbers.
         self.kind = tokenKind   # The TokenType that this token is classified as.
-        if self.kind == 102:
-            self.usr_function()
     
     def usr_function(self):
         if self.kind == 102:
@@ -147,8 +143,9 @@ class Lexer():
         print(f'I am Error: {error_code}')
         exit()
 
-file = open(r'./test.bz', 'r')
+parser = argparse.ArgumentParser(description="Buzz programming language parser for Woodpecker CPU")
+parser.add_argument('filename')
+args = parser.parse_args()
 
-test = Lexer(file)
-
-file.close()
+with open(args.filename) as file:
+    test = Lexer(file)
