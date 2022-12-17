@@ -1,11 +1,11 @@
-set SCOPE: 13;
-set A: 0-3;
-set B: 4-8;
-set OUTPUT: 9-13;
+let A = 4
+let B = 4 
+let O = 5
+let S = A+B+O
 
-def ILV: INV,LOAD,INV;
-def n(split): n(ILV,s(CDEC),INC);
+# Function definitions can have binary arguments
+def ILV: INV,LOAD,INV def HIII
+def n(split): n(ILV,s(CDEC),INC)
 
-START
-[A](split)
-END
+A(split)
+4(split)
