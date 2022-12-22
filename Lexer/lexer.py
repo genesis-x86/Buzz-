@@ -1,49 +1,57 @@
 import re
 
-
 class lexer():
-
+    
     def __init__(self, program):
 
-        self.program_lines = []
-        self.program_variables = []
-        self.program_functions = []
+        self.current_line = ""
+
+        self.line_number = 0
+
+        self.lines = []
+        self.tokens = []
+        self.variables = []
+        self.functions = []
+        self.types = []
 
         for count, line in enumerate(program):
-            self.program_lines+=[line]
-        self.lines = count + 1
+            self.lines+=[line]
 
-        
+    def parse_tokens(self):
 
+        for self.current_line in self.lines:
 
-    def token_parser(self):
-        self.tokens = []
-        self.tokens_type = []
-        for self.line in self.program_lines:
+            self.line_number+=1
+            
+            operators = r'(\s|:|,|\+|\*|/|#|=|-|[(|)]|\[|\])'
+            self.current_line = re.split(operators, self.current_line)
+            self.current_line = [i for i in self.current_line if i != '']
+            self.current_line = [i for i in self.current_line if i != ' ']
+            self.current_line = [i for i in self.current_line if i != '\n']
+            self.current_line = [i for i in self.current_line if i != [] ]
 
-            line_str = "".join(self.line)
-            operators = r'(\s|:|,|\+|#|-|[(|)]|\[|\])'
-            self.line = re.split(operators, line_str)
-            self.line = [i for i in self.line if i != '']
-            self.line = [i for i in self.line if i != ' ']
-            #print(self.line)
             index = 0
-            for current_token in self.line:
-                token = self.check_token(current_token, index)
-
+            line = []
+            line_types = []
+            for self.current_token in self.current_line:
+                token = self.check_token(self.current_token, index)
                 if token != None:
-
-                    self.tokens+=[token.text]
-                    self.tokens_type+=[token.kind]
+                    line+=[token.text]
+                    line_types+=[token.kind]
                     index+=1
                 else:
                     break
-            
-        print("Successfully parsed program!")
-        print(self.tokens)
-        return self.tokens, self.tokens_type     
+
+            self.tokens.append(line)
+            self.types.append(line_types)
+
+        return self.tokens, self.types
+
+
+
 
     def check_token(self, token, token_index):
+        #print(self.previous_token(token_index))
         
         if token == "let":
             token_obj = Token(token, TokenType.LET )
@@ -67,6 +75,10 @@ class lexer():
             token_obj = Token(token, TokenType.MINUS )
         elif token == "+":
             token_obj = Token(token, TokenType.PLUS )
+        elif token == "*":
+            token_obj = Token(token, TokenType.MULTIPLY )
+        elif token == "/":
+            token_obj = Token(token, TokenType.DIVIDE )
         elif token == ",":
             token_obj = Token(token, TokenType.COMMA )
         elif token == "(":
@@ -81,34 +93,43 @@ class lexer():
             token_obj = Token(token, TokenType.NEWLINE )
         elif token == "#":
             return None
-        
-        # Checks for function definition
-        elif (isinstance(token, str) == True) and (self.previous_token(token_index) == "let") or (token in self.program_variables):
+        # Checks for variable definition
+        elif (isinstance(token, str) == True) and (self.previous_token(token_index) == "let") or (token in self.variables):
             token_obj = Token(token, TokenType.IDENT)
 
-            if token not in self.program_variables:
-                self.program_variables.append(token_obj.text)
+            if token not in self.variables:
+                self.variables.append(token_obj.text)
 
-        elif (isinstance(token, str) == True) and (self.line[0] == "def") or (token in self.program_functions):
+        elif (isinstance(token, str) == True) and (self.current_line[0] == "def") or (token in self.functions):
 
             token_obj = Token(token, TokenType.IDENT)
 
-            if token not in self.program_functions:
-                self.program_functions.append(token_obj.text)
+            if token not in self.functions:
+                self.functions.append(token_obj.text)
+                
             
         else:
-            self.abort(f'Unknown token "{token}" is not valid')
+            self.abort(f'Unknown token in line {self.line_number}: "{token}" is not valid')
         return token_obj
 
     def previous_token(self, index):
 
         try:
-            return self.line[index - 1]
+            return self.current_line[index - 1]
         except:
             return None
 
+    def next_token(self, index):
+
+        try:
+            return self.current_line[index + 1]
+        except:
+            return None
+
+
+
     def abort(self, error_code):
-        print(f'I am Error: {error_code}')
+        print(f'Buzz Error: {error_code}')
         exit()
 
 class TokenType():
@@ -119,6 +140,7 @@ class TokenType():
     NEWLINE = 0
     NUMBER = 1
     IDENT = 2
+    FUNC = 3
 
     # Keywords
     LET = 101
@@ -151,8 +173,3 @@ class Token:
         self.text = tokenText   # The token's actual text. Used for identifiers, strings, and numbers.
         self.kind = tokenKind   # The TokenType that this token is classified as.
     
-    def usr_function(self):
-        if self.kind == 102:
-            return True
-        else:
-            return False

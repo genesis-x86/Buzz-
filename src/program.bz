@@ -1,0 +1,17 @@
+let A = 1
+let B = 1
+let OUTPUT = 1
+
+let SCOPE = A+B+OUTPUT
+
+def ILV: INV, LOAD, INV
+
+ILV
+
+2(INC)
+
+CDEC
+
+INV
+
+LOAD

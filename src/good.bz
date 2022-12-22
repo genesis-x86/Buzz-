@@ -1,13 +1,39 @@
-set SCOPE: 20
-set A: 0-5
-set B: 6-10
-set OUTPUT: 11-20
+let A = 10 + 10
+let B = 10 + 30
+let C = 10 - 20
+let D = 1 + 1
+let S = 2
 
-let s: SCOPE
+def ILV: 1(INV), 1(LOAD), INV
 
+def FOO: 2(INV, 3(INC, 1(LOAD)))
 
-START
+def math: 2(INC, 2(CDEC))
+
 INV
+INC
 LOAD
+INC
+LOAD
+INC
+LOAD
+
+def HEY: INC 2(CDEC, 3(INV))
+
+INC
+
+CDEC
 INV
-END
+INV
+
+CDEC
+INV
+INV
+
+
+
+
+def BAR: 2(CDEC), 2(INC)
+
+INV
+ILV
