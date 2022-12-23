@@ -118,9 +118,18 @@ Functions can also contain recursive operations, and declared functions:
 def split: ILV, 5(CDEC), INC
 ```
 
-# Example programs
+Functions can be utilized if you would like to rename the base operations:
 
-## Challenge 0: XOR
+```
+def I: INV
+def N: INC
+def L: LOAD
+def C: CDEC
+```
+
+## Example programs
+
+### Challenge 0: XOR
 
 
 
