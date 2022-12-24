@@ -131,5 +131,23 @@ def C: CDEC
 
 ### Challenge 0: XOR
 
+```
+let A = 1
+let B = 1 
+let O = 1
+let S = A+B+O
 
+def ILV: INV,LOAD,INV
 
+def split: ILV,S(CDEC),INC
+
+split
+split
+S(INC)
+INV
+2(INC)
+ILV
+7(CDEC)
+INC
+INV
+```
