@@ -10,6 +10,12 @@ CDEC
 ```
 Woodpecker programs must have a single operation per line, which makes large programs extremely confusing and tedious. The purpose of Buzz is to allow for more flexibility and control over the base operations provided. Buzz has support for basic expressions, recursive operations, and functions which help in the development of larger woodpecker programs.
 
+## How to compile Buzz code:
+
+```
+python3 main.py program.bz output.wpk
+```
+
 ## Documentation
 
 Buzz program files end in .bz and produce a .wpk file.
@@ -152,4 +158,28 @@ INC
 INV
 ```
 ### Challenge 1: 1-bit Addition
+```
+let A = 1
+let B = 1
+let O = 2
+let S = A+B+O
 
+def ILV: INV, LOAD, INV
+
+def split: ILV, S(CDEC)
+
+def IC: S(INC), S(CDEC)
+
+split
+INC
+split
+2(INC)
+INV
+3(INC)
+INV
+3(INC)
+LOAD
+INC
+IC
+INV
+```
