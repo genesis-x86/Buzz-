@@ -16,20 +16,12 @@ def main():
 
         program_tokens, program_types = program.parse_tokens()
 
-        parsed_program = parse(program_tokens, program_types)
+        parsed_program = parse(program_tokens)
 
         emit = emitter(parsed_program.emit(), args.output_filename)
+        emit.emit_code()
 
         print(f'Successfully compiled {args.filename} into {args.output_filename}!')        
-
-        #print(program_types)
-        #print(program_tokens)
-
-        #print(f'DEBUG{program_types}')
-        #test = buzz_parser()
-        #statements, statement_types = test.parse_statements(program_tokens, program_types)
-        #test.match(statement_types)
-
 
 if __name__=="__main__":
     main()

@@ -66,16 +66,23 @@ class rparse():
      
 class parse():
 
-    def __init__(self, tokens, types) -> None:
+    def __init__(self, tokens, functions={}, variables={}) -> None:
+
+
 
         self.line_number = 0
         self.tokens = tokens
-        self.types = types
         self.functions = {}
         self.variables = {}
         self.operations = ["INV", "INC", "CDEC", "LOAD"]
-
         self.emitted_code = []
+
+        if functions!={}:
+            self.functions.update(functions)
+        
+        if variables!={}:
+            self.variables.update(variables)
+
 
         self.program()
 

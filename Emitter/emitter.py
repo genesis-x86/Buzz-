@@ -2,16 +2,14 @@ from collections.abc import Iterable
 
 class emitter():
 
-    def __init__(self, program, filename):
+
+    def __init__(self, program, filename=None):
 
         self.filename = filename
+        self.instructions = self.flatten(program)
 
-        instructions = self.flatten(program)
-
-        self.emit_code(instructions)
-
-
-    def emit_code(self, program):
+    def emit_code(self):
+        program = self.instructions
         with open(f'{self.filename}.wpk', 'a') as f:
 
             for operation in program:

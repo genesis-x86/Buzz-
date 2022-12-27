@@ -1,3 +1,9 @@
+import argparse
+from Lexer.lexer import lexer
+from Parser.parser import parse
+from Emitter.emitter import emitter
+
+
 class CPU:
 
     # Initializes memory and register arrays
@@ -7,6 +13,9 @@ class CPU:
         self.memSize = memSize
 
 class State(CPU):
+
+    functions = {}
+    variables = {}
 
     def __init__(self, memSize):
         super().__init__(memSize)
@@ -52,35 +61,52 @@ class State(CPU):
     def returnState(self):
         return self.register, self.memory, self.save
 
-print("Welcome to Buzz version 2!")
+
+print("Welcome to Buzz version 3!")
 print(f'Type "help", "credits" or "license" for more information. ')
 
 
 state = State(20)
+print(state.returnState())
 
 # Main loop
 while True:
+    
+    statement = input("Buzz > ")
 
-    print(state.mem)
-    print(state.returnState())
-
-    operation = input("Buzz > ")
-    if operation == "INC":
-        state.incReg()
-    elif operation == "CDEC":
-        state.cdecReg()
-    elif operation == "INV":
-        state.invMem()
-    elif operation == "LOAD":
-        state.loadMem()
-    elif operation == "license":
+    if statement == "license":
         print("Code is available on github. Licensed under GNU")
-    elif operation == "credits":
+    elif statement == "credits":
         print("Original woodpecker implementation by radical semiconductor")
         print("Buzz interpretation by project pleiades")
         print("Made by genesis")
-    elif operation == "help":
+    elif statement == "help":
         print("The woodpecker cpu is a zero-indexed array of 2^32 bits of memory, all initialized at zero. The cpu includes a binary memory register which can be accessed at any index in the array.  The cpu allows four operations: INC to increment the index, LOAD which loads the binary memory register with 1, if the memory at the current index is 1, INV which inverts the bit in the memory and CDEC which decrements the register if and only if the bit it has loaded is 1. ")
+    elif statement == "exit":
+        exit()
+    elif statement == "mem":
+        print(state.mem)
     else:
-        print(f'Woodpecker Error: "{operation}" not valid')
+        program = lexer(statement, statement=True, functions=list(state.functions.keys()),variables=list(state.variables.keys()))
+
+        program_tokens, program_types = program.parse_tokens()
+
+        parsed_program = parse(program_tokens, state.functions, state.variables)
+
+        state.functions.update(parsed_program.functions)
+        state.variables.update(parsed_program.variables)
+        
+        emit = emitter(parsed_program.emit())
+        print(list(emit.instructions))
+        for operation in list(emit.instructions):
+            if operation == "INV":
+                state.invMem()
+            elif operation == "LOAD":
+                state.loadMem()
+            elif operation == "INC":
+                state.incReg()
+            elif operation == "CDEC":
+                state.cdecReg()
+            
+        print(state.returnState())
 

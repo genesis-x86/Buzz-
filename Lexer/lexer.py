@@ -2,7 +2,7 @@ import re
 
 class lexer():
     
-    def __init__(self, program):
+    def __init__(self, program, statement=False, functions=[], variables=[]):
 
         self.current_line = ""
 
@@ -14,14 +14,32 @@ class lexer():
         self.functions = []
         self.types = []
 
-        for count, line in enumerate(program):
-            self.lines+=[line]
+        if functions != []:
+            
+            for function in functions:
+                self.functions.append(function)
+
+        if variables != []:
+            for variable in variables:
+                self.variables.append(variable)
+
+
+
+
+
+        if statement==False:
+            for count, line in enumerate(program):
+                self.lines+=[line]
+        else:
+            self.lines+=[program]
+
 
     def parse_tokens(self):
 
         for self.current_line in self.lines:
 
             self.line_number+=1
+            
             
             operators = r'(\s|:|,|\+|\*|/|#|=|-|[(|)]|\[|\])'
             self.current_line = re.split(operators, self.current_line)
@@ -52,7 +70,6 @@ class lexer():
 
     def check_token(self, token, token_index):
         #print(self.previous_token(token_index))
-        
         if token == "let":
             token_obj = Token(token, TokenType.LET )
         elif token == "def":
