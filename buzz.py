@@ -97,8 +97,9 @@ while True:
         state.variables.update(parsed_program.variables)
         
         emit = emitter(parsed_program.emit())
-        print(list(emit.instructions))
-        for operation in list(emit.instructions):
+        instructions = list(emit.instructions)
+
+        for operation in instructions:
             if operation == "INV":
                 state.invMem()
             elif operation == "LOAD":
@@ -107,6 +108,5 @@ while True:
                 state.incReg()
             elif operation == "CDEC":
                 state.cdecReg()
-            
         print(state.returnState())
 
